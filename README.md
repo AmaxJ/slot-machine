@@ -12,6 +12,9 @@ When player goes broke prompt for reload.
 
 # RULES:
  -Horizontal matches recieve 1x payout
+ 
  -diagonal matches recieve .75x payout
+ 
  -max bet of 3 tokens
+ 
  -When player runs out of token game prompts player to reload
