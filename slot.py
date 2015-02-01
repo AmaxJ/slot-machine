@@ -11,6 +11,12 @@ class Player:
 	def add_tokens(self, numtokens):
 		self.tokens += numtokens
 
+	def has_balance(self, self.tokens):
+		if self.tokens == 0:
+			return False
+		else:
+			return True
+
 	def add_luck(self):			#not sure if going to keep this
 		self.luck +=1
 
@@ -46,15 +52,32 @@ class Player:
 
 class Slot_machine:
 	def __init__(self):
-		self.values = []
-		self.multiplyer = 1        
+		self.values = ["SIX!!!", "LUCKY6", "CHERRY", "3-BAR!","2-BAR!","1-BAR!"]
+		self.multiplier = 1 
+		self.wager = 0    
 
-	def spin(self): #imagine each reel rolling vertically, so values are in fixed position
-					#in relation to each other.
+		#wheel spins vertically:
+
+	def valid_bet(self, wagerSize):
+		if wagerSize < 0 or wagerSize > 3:
+			return False
+		else:
+			return True
+			
+	def spin(self):
+		print "You can bet up to 3 tokens per spin: "
+		self.wager = raw_input("Please enter your bet: ")
+		if self.valid_bet(self.wager):
+			#spin
+
 		pass
 
-	def multipliyer(self): #if diagonal match .75x, id horizontal 1x
+	def diagonal(self):	#checks to see if values match diagonally
 		pass
+
+	def multiplier(self):	#sets the payout to 75% of full if diagonal match
+		if self.diagonal:
+			self.multiplier = 0.75
 
 	def payouts(self): #payouts should vary
 		pass
