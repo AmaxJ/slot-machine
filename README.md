@@ -3,11 +3,12 @@
 Lucky-6 slot machine game
 
 Begining screen should display:
-Players Balance in tokens
-prompt for bet size
-prompt for spin
-display results, and updated player balance
-When player goes broke prompt for reload
+
+Player's balance in tokens,
+prompt for bet size,
+prompt for spin. Then after a spin it should
+display the result and updated player balance.
+When player goes broke prompt for reload.
 
 # RULES:
  -Horizontal matches recieve 1x payout
