@@ -46,8 +46,7 @@ class Player:
 
 class Slot_machine:
 	def __init__(self):
-		self.values = {'SIX!!!' : 0, 'LUCKY6': 1, 'CHERRY' : 2,				#or could be a list...
-							   '3-BAR!': 3, '2-BAR!' : 4, '1-BAR!' : 5}
+		self.values = []
 		self.multiplyer = 1        
 
 	def spin(self): #imagine each reel rolling vertically, so values are in fixed position
