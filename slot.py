@@ -81,6 +81,8 @@ class Slot_machine:
 
 
 	def matrix(self):
+		"""creates a matrix with numbers that correspond to each value in
+		the list 'values'"""
 		num1, num2, num3 = randrange(6), randrange(6), randrange(6)
 		display = [[],[],[]]
 		display[0].append(self.reel_values(num1)[0])
