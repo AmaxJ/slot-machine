@@ -83,19 +83,15 @@ class Slot_machine:
 	def matrix(self):
 		num1, num2, num3 = randrange(6), randrange(6), randrange(6)
 		display = [[],[],[]]
-		for item in display:
-			if item == display[0]:
-				display[0].append(self.reel_values(num1)[0])
-				display[0].append(self.reel_values(num2)[0])
-				display[0].append(self.reel_values(num3)[0])
-			elif item == display[1]:
-				display[1].append(num1)
-				display[1].append(num2)
-				display[1].append(num3)
-			elif item == display[2]:
-				display[2].append(self.reel_values(num1)[1])
-				display[2].append(self.reel_values(num2)[1])
-				display[2].append(self.reel_values(num2)[1])
+		display[0].append(self.reel_values(num1)[0])
+		display[0].append(self.reel_values(num2)[0])
+		display[0].append(self.reel_values(num3)[0])
+		display[1].append(num1)
+		display[1].append(num2)
+		display[1].append(num3)
+		display[2].append(self.reel_values(num1)[1])
+		display[2].append(self.reel_values(num2)[1])
+		display[2].append(self.reel_values(num2)[1])
 		self.map = display
 
 	def rep_matrix(self, matrix):
@@ -134,7 +130,7 @@ def test():
 
 	#print dir(player1)
 
-#test()
+test()
 
 
 
