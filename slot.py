@@ -52,11 +52,11 @@ class Player:
 
 class Slot_machine:
 	def __init__(self):
-		self.values = [(0, 'SIX!!!'), (1, 'LUCKY6'), (2, 'CHERRY'), 
-					   (3, '3-BAR!'), (4, '2-BAR!'), (5, '1-BAR!')]
+		self.v = ['SIX!!!', 'LUCKY6', 'CHERRY', 
+					   '3-BAR!', '2-BAR!', '1-BAR!']    #values
 		self.multiplier = 1 
 		self.wager = 0    
-		self.map = []
+		self.map = [] # may be redundant
 
 
 	def valid_bet(self, wagerSize):
@@ -78,7 +78,7 @@ class Slot_machine:
 			upper, lower = value - 1, value + 1
 		return upper, lower
 
-
+# the matrix is like a map following the rules for displaying slot value
 
 	def matrix(self):
 		"""creates a matrix with numbers that correspond to each value in
@@ -94,11 +94,20 @@ class Slot_machine:
 		display[2].append(self.reel_values(num1)[1])
 		display[2].append(self.reel_values(num2)[1])
 		display[2].append(self.reel_values(num2)[1])
-		self.map = display
+		return display
 
 	def rep_matrix(self, matrix):
-		
-		reppped = [[],[],[]]
+		""" Replaces each number in the matrix with the corresponding value from self.v""" 
+		repped = [[self.v[matrix[0][0]], self.v[matrix[0][1]], self.v[matrix[0][2]]],
+				  [self.v[matrix[1][0]], self.v[matrix[1][1]], self.v[matrix[1][2]]],
+				  [self.v[matrix[2][0]], self.v[matrix[2][1]], self.v[matrix[2][2]]]]
+		return repped
+
+	def package_matrix(self):
+		package = self.rep_matrix(self.matrix())
+		print package[0]
+		print package[1]
+		print package[2]
 
 
 	def diagonal(self):	#checks to see if values match diagonally
@@ -111,9 +120,10 @@ class Slot_machine:
 	def payouts(self): #payouts should vary
 		pass
 
+test = Slot_machine()
 
 
-
+test.package_matrix()
 	
 
 def test():
@@ -132,7 +142,7 @@ def test():
 
 	#print dir(player1)
 
-test()
+#test()
 
 
 
