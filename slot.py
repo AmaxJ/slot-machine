@@ -53,11 +53,10 @@ class Player:
 class Slot_machine:
 	def __init__(self):
 		self.v = ['SIX!!!', 'LUCKY6', 'CHERRY', 
-					   '3-BAR!', '2-BAR!', '1-BAR!']    #values
+				  '3-BAR!', '2-BAR!', '1-BAR!']    #values
 		self.multiplier = 1 
 		self.wager = 0    
 		self.map = [] # may be redundant
-
 
 	def valid_bet(self, wagerSize):
 		if wagerSize < 0 or wagerSize > 3:
@@ -78,23 +77,21 @@ class Slot_machine:
 			upper, lower = value - 1, value + 1
 		return upper, lower
 
-# the matrix is like a map following the rules for displaying slot value
-
-	def matrix(self):
+	def __matrix(self):
 		"""creates a matrix with numbers that correspond to each value in
 		the list 'values'"""
 		num1, num2, num3 = randrange(6), randrange(6), randrange(6)
-		display = [[],[],[]]
-		display[0].append(self.reel_values(num1)[0])
-		display[0].append(self.reel_values(num2)[0])
-		display[0].append(self.reel_values(num3)[0])
-		display[1].append(num1)
-		display[1].append(num2)
-		display[1].append(num3)
-		display[2].append(self.reel_values(num1)[1])
-		display[2].append(self.reel_values(num2)[1])
-		display[2].append(self.reel_values(num2)[1])
-		return display
+		matrix = [[],[],[]]
+		matrix[0].append(self.reel_values(num1)[0])
+		matrix[0].append(self.reel_values(num2)[0])
+		matrix[0].append(self.reel_values(num3)[0])
+		matrix[1].append(num1)
+		matrix[1].append(num2)
+		matrix[1].append(num3)
+		matrix[2].append(self.reel_values(num1)[1])
+		matrix[2].append(self.reel_values(num2)[1])
+		matrix[2].append(self.reel_values(num2)[1])
+		return matrix
 
 	def rep_matrix(self, matrix):
 		""" Replaces each number in the matrix with the corresponding value from self.v""" 
@@ -104,45 +101,47 @@ class Slot_machine:
 		return repped
 
 	def package_matrix(self):
-		package = self.rep_matrix(self.matrix())
+		package = self.rep_matrix(self.__matrix())
 		print package[0]
 		print package[1]
 		print package[2]
 
 
-	def diagonal(self):	#checks to see if values match diagonally
-		pass
+	# need to get this function to recognize mixed Bars (1-bar, 2-bar,3-bar) as a valid
+	# match
+	def diagonal(self, matrix):
+		diagonal = False
+		if matrix[0][0] == matrix[1][1] and matrix[1][1] == matrix[2][2]:
+			diagonal = True
+		elif matrix[0][2] == matrix[1][1] and matrix[1][1] == matrix[2][0]:
+			diagonal = True
 
 	def multiplier(self):	#sets the payout to 75% of full if diagonal match
-		if self.diagonal:
+		if diagonal():
 			self.multiplier = 0.75
+		else:
+			self.multiplier = 1
 
 	def payouts(self): #payouts should vary
 		pass
 
-test = Slot_machine()
 
-
-test.package_matrix()
+	
+def test():
+	#create slot_machine instance
+	test = Slot_machine()
+	#print out slot values
+	test.package_matrix()
 	
 
-def test():
-	test = Slot_machine()
-	print test.map
-	test.matrix()
-	print test.map
-
-	print "**Create player instance, print amt of tokens(0): "
 	player1 = Player('Alan')
-	print player1.tokens, "\n"
+	assert player1.tokens == 0
+	player1.add_tokens(100)
+	assert player1.tokens == 100
 
-	print "**add_tokens(10), print player tokens(10): "
-	player1.add_tokens(10)
-	print player1.tokens, "\n"
 
-	#print dir(player1)
 
-#test()
+test()
 
 
 
