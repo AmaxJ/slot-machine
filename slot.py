@@ -132,7 +132,7 @@ def test():
 	test = Slot_machine()
 	#print out slot values
 	test.package_matrix()
-	
+	print "Testing Brendan's edit"
 
 	player1 = Player('Alan')
 	assert player1.tokens == 0
