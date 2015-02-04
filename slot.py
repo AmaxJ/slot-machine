@@ -139,13 +139,6 @@ class Slot_machine:
 	def payouts(self): #payouts should vary
 		pass
 
-test = Slot_machine()
-
-spin = test.rep_matrix()
-
-print spin
-print test.match(spin)
-
 	
 def test():
 	#create slot_machine instance
