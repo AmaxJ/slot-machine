@@ -93,8 +93,9 @@ class Slot_machine:
 		matrix[2].append(self.reel_values(num2)[1])
 		return matrix
 
-	def rep_matrix(self, matrix):
+	def rep_matrix(self):
 		""" Replaces each number in the matrix with the corresponding value from self.v""" 
+		matrix = self.__matrix()
 		repped = [[self.v[matrix[0][0]], self.v[matrix[0][1]], self.v[matrix[0][2]]],
 				  [self.v[matrix[1][0]], self.v[matrix[1][1]], self.v[matrix[1][2]]],
 				  [self.v[matrix[2][0]], self.v[matrix[2][1]], self.v[matrix[2][2]]]]
@@ -116,6 +117,19 @@ class Slot_machine:
 		elif matrix[0][2] == matrix[1][1] and matrix[1][1] == matrix[2][0]:
 			diagonal = True
 
+	def match(self, matrix):
+		""" Checks the horizontal row for a match"""
+		last_item = matrix[1][0][-4:]
+		match = True
+		for item in matrix[1]:
+			if item[-4:] != last_item:
+				match = False
+			last_item = item[-4:]
+		return match
+
+	def is_bar(self):
+		pass	
+
 	def multiplier(self):	#sets the payout to 75% of full if diagonal match
 		if diagonal():
 			self.multiplier = 0.75
@@ -125,15 +139,24 @@ class Slot_machine:
 	def payouts(self): #payouts should vary
 		pass
 
+test = Slot_machine()
+
+spin = test.rep_matrix()
+
+print spin
+print test.match(spin)
 
 	
 def test():
 	#create slot_machine instance
 	test = Slot_machine()
-	#print out slot values
-	test.package_matrix()
+	spin = test.rep_matrix()
+	print spin
+	#match() retursn True if horizontal match, False if no match, True if 3 bars of any value
+	print test.match(spin)
+
 	print "Testing Brendan's edit"
-    print "further edit 1"
+	print "further edit 1"
 
 	player1 = Player('Alan')
 	assert player1.tokens == 0
@@ -142,7 +165,7 @@ def test():
 
 
 
-test()
+#test()
 
 
 
