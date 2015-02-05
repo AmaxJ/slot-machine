@@ -2,7 +2,7 @@ from random import randrange
 from graphics import * #WINNER graphic that will display when player wins
 
 
-class Player:
+class Player(object):
 	def __init__(self, name):
 		self.name = name
 		self.tokens = 0
@@ -16,9 +16,6 @@ class Player:
 			return False
 		else:
 			return True
-
-	def add_luck(self):			#not sure if going to keep this
-		self.luck +=1
 
 #slot machine will be based on 'lucky-7' 3-reel slot
 # with the values in each reel consisting of:
@@ -50,13 +47,14 @@ class Player:
 #	 [3-BAR!, 2-BAR!, 2-BAR!],
 #	 [2-BAR!,1-BAR!,1-BAR!]]
 
-class Slot_machine:
+class Slot_machine(object):
 	def __init__(self):
 		self.v = ['SIX!!!', 'LUCKY6', 'CHERRY', 
 				  '3-BAR!', '2-BAR!', '1-BAR!']    #values
 		self.multiplier = 1 
 		self.wager = 0    
 		self.map = [] # may be redundant
+
 
 	def valid_bet(self, wagerSize):
 		if wagerSize < 0 or wagerSize > 3:
@@ -79,7 +77,7 @@ class Slot_machine:
 
 	def __matrix(self):
 		"""creates a matrix with numbers that correspond to each value in
-		the list 'values'"""
+		the list 'v' """
 		num1, num2, num3 = randrange(6), randrange(6), randrange(6)
 		matrix = [[],[],[]]
 		matrix[0].append(self.reel_values(num1)[0])
@@ -94,18 +92,18 @@ class Slot_machine:
 		return matrix
 
 	def rep_matrix(self):
-		""" Replaces each number in the matrix with the corresponding value from self.v""" 
+		""" Generates a matrix and then converts it to slot values for display""" 
 		matrix = self.__matrix()
 		repped = [[self.v[matrix[0][0]], self.v[matrix[0][1]], self.v[matrix[0][2]]],
 				  [self.v[matrix[1][0]], self.v[matrix[1][1]], self.v[matrix[1][2]]],
 				  [self.v[matrix[2][0]], self.v[matrix[2][1]], self.v[matrix[2][2]]]]
 		return repped
 
-	def package_matrix(self):
-		package = self.rep_matrix(self.__matrix())
-		print package[0]
-		print package[1]
-		print package[2]
+	def package_matrix(self, matrix):
+		""" Prints each row on a separate line"""
+		print matrix[0]
+		print matrix[1]
+		print matrix[2]
 
 
 	# need to get this function to recognize mixed Bars (1-bar, 2-bar,3-bar) as a valid
@@ -145,7 +143,7 @@ def test():
 	test = Slot_machine()
 	spin = test.rep_matrix()
 	print spin
-	#match() retursn True if horizontal match, False if no match, True if 3 bars of any value
+	#match() returns True if horizontal match, False if no match, True if 3 bars of any value
 	print test.match(spin)
 
 	print "Testing Brendan's edit"
