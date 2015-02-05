@@ -55,8 +55,8 @@ class Slot_machine(object):
         self.multiplier = 1
         self.wager = 0
         self.map = []  # may be redundant
-        self.diagonal_winning_value = 'No diagonal match!'
-        self.horizontal_winning_value = 'No horizontal match!'
+        self.diagonal_winning_value = None
+        self.horizontal_winning_value = None
         self.matrix = []  # may be redundant
 
     def valid_bet(self, wagerSize):
@@ -134,6 +134,8 @@ class Slot_machine(object):
         elif (_02 == 3 or _02 == 4 or _02 == 5) and (_11 == 3 or _11 == 4 or _11 == 5) and (_20 == 3 or _20 == 4 or _20
             == 5):
             self.diagonal_winning_value = 'Bar'
+        else:
+            self.diagonal_winning_value = None
 
 
     def match(self, matrix):
@@ -149,6 +151,8 @@ class Slot_machine(object):
             horizontal[1] == 4 or horizontal[1] == 5) and (horizontal[2] == 3 or horizontal[2] == 4 or
             horizontal[2] == 5):
             self.horizontal_winning_value = 'Bar'
+        else:
+            self.horizontal_winning_value = None
 
     def multiplier(self):  # sets the payout to 75% of full if diagonal match
         if self.horizontal_winning_value is not None:
@@ -166,21 +170,23 @@ def test():
         #create slot_machine instance
         test = Slot_machine()
         spin = test.rep_matrix()[0]
+
         test.match(spin)
         test.diagonal(spin)
 
 
         print test.horizontal_winning_value
         print test.diagonal_winning_value
+        
         x += 1
     # print spin
     #match() returns True if horizontal match, False if no match, True if 3 bars of any value
     # print test.match(spin)
 
-        player1 = Player('Alan')
-        assert player1.tokens == 0
-        player1.add_tokens(100)
-        assert player1.tokens == 100
+    player1 = Player('Alan')
+    assert player1.tokens == 0
+    player1.add_tokens(100)
+    assert player1.tokens == 100
 
 
 test()
