@@ -109,45 +109,35 @@ class Slot_machine(object):
         print matrix[1]
         print matrix[2]
 
-
-    # need to get this function to recognize mixed Bars (1-bar, 2-bar,3-bar) as a valid
-    # match
     def diagonal(self, matrix):
-        diagonal = False
-        row = []
-        '''if matrix[0][0][-4:] == matrix[1][1][-4:] and matrix[1][1][-4:] == matrix[2][2][-4:]:
-            diagonal = True
-        elif matrix[0][2][-4:] == matrix[1][1][-4:] and matrix[1][1][-4:] == matrix[2][0][-4:]:
-            diagonal = True
-        '''
-        diagonal = False
-        if (matrix[0][0] == 3 or matrix[0][0] == 4 or matrix[0][0] == 5) and (matrix[1][1] == 3 or matrix[1][1] == 4 or
-            matrix[1][1] == 5) and (matrix[2][2] == 3 or matrix[2][2] == 4 or matrix[2][2] == 5):
-            diagonal = True
-        elif (matrix[0][2] == 3 or matrix[0][2] == 4 or matrix[0][2] == 5) and (matrix[1][1] == 3 or matrix[1][1] == 4
-            or matrix[1][1] == 5) and (matrix[2][0] == 3 or matrix[2][0] == 4 or matrix[2][0] == 5):
-            diagonal = True
-        print diagonal
+        """Check if there is a match along the diagonals of the matrix and returns the winning value eg. SIX!!!, LUCKY6
+        or just BAR for any combination of 3-BAR, 2-BAR or 1-BAR"""
 
+        # Used this if statement in case we need the list of winning values rather than just the type of winning value
+        diagonal = []
+        for i in matrix[i][i]:
+            diagonal.append(i)
 
-
+        if diagonal[0] == diagonal[1] and diagonal[2] == diagonal[2]:
+            return self.v[diagonal[0]]
+        elif (diagonal[0] == 3 or diagonal[0] == 4 or diagonal[0] == 5) and (diagonal[1] == 3 or diagonal[1] == 4 or
+            diagonal[1] == 5) and (diagonal[2] == 3 or diagonal[2] == 4 or diagonal[2] == 5):
+            return 'Bar'
 
     def match(self, matrix):
-        """ Checks the horizontal row for a match, and returns the values in the row
-		if they do match."""
-        last_item = matrix[1][0][-4:]
-        row = []
-        match = True
-        for item in matrix[1]:
-            if item[-4:] != last_item:
-                match = False
-            else:
-                row.append(item)
-            last_item = item[-4:]
-        if match:
-            return match, row
+        """ Checks the horizontal row for a match, and returns the values in the row if they do match."""
 
-    def is_bar(self, row):  ####
+        horizontal = []
+        for i in matrix[1]:
+            horizontal.append(i)
+
+        if horizontal[0] == horizontal[1] and horizontal[2] == horizontal[2]:
+            return self.v[diagonal[0]]
+        elif (horizontal[0] == 3 or horizontal[0] == 4 or horizontal[0] == 5) and (horizontal[1] == 3 or horizontal[1] == 4 or
+            horizontal[1] == 5) and (horizontal[2] == 3 or horizontal[2] == 4 or horizontal[2] == 5):
+            return 'Bar'
+
+    def is_bar(self, row):
         bars = 0
         for value in row:
             if value[-4:] == "BAR!":
