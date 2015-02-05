@@ -38,6 +38,7 @@ class Player(object):
 # 2-BAR! = 50x
 # 1-BAR! = 20x
 # Mixed bars= 3x
+# 2 Bars, and some other value = 2x
 
 # 1x payout for horizontal match
 # .75x payout for diagonal match
@@ -57,6 +58,7 @@ class Slot_machine(object):
 
 
 	def valid_bet(self, wagerSize):
+		""" Checks that player bet is 3 or less """
 		if wagerSize < 0 or wagerSize > 3:
 			return False
 		else:
@@ -110,23 +112,34 @@ class Slot_machine(object):
 	# match
 	def diagonal(self, matrix):
 		diagonal = False
-		if matrix[0][0] == matrix[1][1] and matrix[1][1] == matrix[2][2]:
+		row = []
+		if matrix[0][0][-4:] == matrix[1][1][-4:] and matrix[1][1][-4:] == matrix[2][2][-4:]:
 			diagonal = True
-		elif matrix[0][2] == matrix[1][1] and matrix[1][1] == matrix[2][0]:
+		elif matrix[0][2][-4:] == matrix[1][1][-4:] and matrix[1][1][-4:] == matrix[2][0][-4:]:
 			diagonal = True
 
+
 	def match(self, matrix):
-		""" Checks the horizontal row for a match"""
+		""" Checks the horizontal row for a match, and returns the values in the row
+		if they do match."""
 		last_item = matrix[1][0][-4:]
+		row = []
 		match = True
 		for item in matrix[1]:
 			if item[-4:] != last_item:
 				match = False
+			else: 
+				row.append(item)
 			last_item = item[-4:]
-		return match
+		if match:
+			return match, row
 
-	def is_bar(self):
-		pass	
+	def is_bar(self, row): ####
+		bars = 0
+		for value in row:
+			if value[-4:] == "BAR!":
+				bars += 1
+		return bars
 
 	def multiplier(self):	#sets the payout to 75% of full if diagonal match
 		if diagonal():
@@ -156,7 +169,7 @@ def test():
 
 
 
-#test()
+test()
 
 
 
