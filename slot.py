@@ -69,7 +69,6 @@ class Slot_machine(object):
     def reel_values(self, value):
         """Based on the value on display in the middle, 
         calculates the values above and below on the reel"""
-
         upper = 0
         lower = 0
         if value == 0:
@@ -94,8 +93,6 @@ class Slot_machine(object):
         matrix[2].append(self.reel_values(num1)[1])
         matrix[2].append(self.reel_values(num2)[1])
         matrix[2].append(self.reel_values(num2)[1])
-
-
         return matrix
 
     def rep_matrix(self):
@@ -117,24 +114,18 @@ class Slot_machine(object):
         """Check if there is a match along the diagonals of the matrix and 
         returns the winning value eg. SIX!!!, LUCKY6 or just BAR for any 
         combination of 3-BAR, 2-BAR or 1-BAR"""
-
         # Assign matrix elements to variables to make it easier to view
         if self.horizontal_winning_value == None:
-
             _00, _01, _02 = matrix[0][0], matrix[0][1], matrix[0][2]
             _10, _11, _12 = matrix[1][0], matrix[1][1], matrix[1][2]
             _20, _21, _22 = matrix[2][0], matrix[2][1], matrix[2][2]
-
             if _00 == _11 and _11 == _22:
                 self.diagonal_winning_value = self.v[_00]
-
             elif _02 == _11 and _11 == _20:
                 self.diagonal_winning_value = self.v[_02]
-
             elif (_00 == 3 or _00 == 4 or _00 == 5) and (_11 == 3 or _11 == 4
                 or _11 == 5) and (_22 == 3 or _22 == 4 or _22 == 5):
                 self.diagonal_winning_value = 'Bar'
-
             elif (_02 == 3 or _02 == 4 or _02 == 5) and (_11 == 3 or _11 == 4 or
                  _11 == 5) and (_20 == 3 or _20 == 4 or _20 == 5):
                 self.diagonal_winning_value = 'Bar'
@@ -145,11 +136,9 @@ class Slot_machine(object):
     def match(self, matrix):
         """ Checks the horizontal row for a match, and returns the
          values in the row if they do match."""
-
         horizontal = []
         for i in matrix[1]:
             horizontal.append(i)
-
         if horizontal[0] == horizontal[1] and horizontal[1] == horizontal[2]:
             self.horizontal_winning_value = self.v[horizontal[0]]
         elif (horizontal[0] == 3 or horizontal[0] == 4 or horizontal[0] == 5) and (horizontal[1] == 3 or
@@ -168,20 +157,25 @@ class Slot_machine(object):
     def payouts(self):  # payouts should vary
         pass
 
+
 def test():
+    test_values = [[4, 2, 2], #matches horizontally and vertically
+                   [5, 3, 3],
+                   [0, 4, 4]]
     #create slot_machine instance
     test = Slot_machine()
-    spin = test.rep_matrix()[0]
 
+    test.match(test_values)
+    test.diagonal(test_values)
+    assert test.horizontal_winning_value == 'Bar'
+    assert test.diagonal_winning_value == None
+    
+    spin = test.rep_matrix()[0]
     test.match(spin)
     test.diagonal(spin)
 
-
     print "horizontal: ", test.horizontal_winning_value
     print "diagonal: ", test.diagonal_winning_value
-    # print spin
-    #match() returns True if horizontal match, False if no match, True if 3 bars of any value
-    # print test.match(spin)
 
     player1 = Player('Alan')
     assert player1.tokens == 0
