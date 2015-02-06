@@ -92,7 +92,7 @@ class Slot_machine(object):
         matrix[1].append(num3)
         matrix[2].append(self.reel_values(num1)[1])
         matrix[2].append(self.reel_values(num2)[1])
-        matrix[2].append(self.reel_values(num2)[1])
+        matrix[2].append(self.reel_values(num3)[1])
         return matrix
 
     def rep_matrix(self):
