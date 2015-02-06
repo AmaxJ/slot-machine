@@ -125,10 +125,10 @@ class Slot_machine(object):
                 self.diagonal_winning_value = self.v[_02]
             elif (_00 == 3 or _00 == 4 or _00 == 5) and (_11 == 3 or _11 == 4
                 or _11 == 5) and (_22 == 3 or _22 == 4 or _22 == 5):
-                self.diagonal_winning_value = 'Bar'
+                self.diagonal_winning_value = 'mix_bar'
             elif (_02 == 3 or _02 == 4 or _02 == 5) and (_11 == 3 or _11 == 4 or
                  _11 == 5) and (_20 == 3 or _20 == 4 or _20 == 5):
-                self.diagonal_winning_value = 'Bar'
+                self.diagonal_winning_value = 'mix_bar'
             else:
                 self.diagonal_winning_value = None
 
@@ -144,18 +144,28 @@ class Slot_machine(object):
         elif (horizontal[0] == 3 or horizontal[0] == 4 or horizontal[0] == 5) and (horizontal[1] == 3 or
             horizontal[1] == 4 or horizontal[1] == 5) and (horizontal[2] == 3 or horizontal[2] == 4 or
             horizontal[2] == 5):
-            self.horizontal_winning_value = 'Bar'
+            self.horizontal_winning_value = 'mix_bar'
         else:
             self.horizontal_winning_value = None
 
-    def multiplier(self):  # sets the payout to 75% of full if diagonal match
+    def multiplier(self):  # redundant function
         if self.horizontal_winning_value is not None:
             self.multiplier = 1
         elif self.diagonal_winning_value is not None:
             self.multiplier = 0.75
 
-    def payouts(self):  # payouts should vary
+    def place_bet(self):
+        #sets self.wager to whatever the person bets
         pass
+
+    def payouts(self):
+        payouts = { 'SIX!!!':1500, 'LUCKY6':250, 'CHERRY':150,
+                    '3-BAR!':100, '2-BAR!':50, '1-BAR':20,
+                    'mix_bar':3}
+        if self.horizontal_winning_value != None:
+            return self.wager *  payouts[self.horizontal_winning_value]
+        elif self.diagonal_winning_value != None:
+            return (self.wager * payouts[self.diagonal_winning_value]) * 0.75
 
 
 def test():
@@ -167,12 +177,13 @@ def test():
 
     test.match(test_values)
     test.diagonal(test_values)
-    assert test.horizontal_winning_value == 'Bar'
+    assert test.horizontal_winning_value == 'mix_bar'
     assert test.diagonal_winning_value == None
     
     spin = test.rep_matrix()[0]
     test.match(spin)
     test.diagonal(spin)
+    #test.payout()
 
     print "horizontal: ", test.horizontal_winning_value
     print "diagonal: ", test.diagonal_winning_value
