@@ -106,17 +106,17 @@ class SlotMachine(object):
     @staticmethod
     def all_same(values):
         # Checks to see if all values within a list are the same.
-        return not values or values.count(values[0]) == len(values)
+        # return not values or values.count(values[0]) == len(values)
+        return all([values[0] == value for value in values])
 
-    def diagonal(self, matrix):
+    def diagonal_check(self, matrix):
         """Check if there is a match along the diagonals of the matrix and returns the winning value
         eg. SIX!!!, LUCKY6 or just BAR for any combination of 3-BAR, 2-BAR or 1-BAR."""
         # Assign matrix elements to variables to make it easier to view
 
-        # if not self.diagonal_winning_value:
         first_diagonal = (matrix[0][0], matrix[1][1], matrix[2][2])
         second_diagonal = (matrix[2][0], matrix[1][1], matrix[0][2])
-        mix_bar_values = list(permutations([3, 4, 5], 3))
+        mix_bar_values = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
 
         if self.all_same(first_diagonal):
             self.diagonal_winning_value = self.v[first_diagonal[0]]
@@ -128,14 +128,14 @@ class SlotMachine(object):
             self.diagonal_winning_value = 0
 
     # May want to rename this function to something that directly relates to the horizontal middle row.
-    def match(self, matrix):
+    def horizontal_check(self, matrix):
         # Checks the horizontal row for a match, and returns the values in the row if they do match.
         horizontal = [i for i in matrix[1]]
-        possible_horizontal_permutations = list(permutations([horizontal[i] for i in range(3)], 3))
+        mix_bar_values = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
 
         if self.all_same(horizontal):
             self.horizontal_winning_value = self.v[horizontal[0]]
-        elif (3, 4, 5) in possible_horizontal_permutations:
+        elif tuple(horizontal) in mix_bar_values:
             self.horizontal_winning_value = "MIX BAR"
         else:
             self.horizontal_winning_value = 0
@@ -170,15 +170,15 @@ class SlotMachine(object):
 
 
 def test():
-    test_values = [[2, 3, 4], #matches horizontally and diagonally
+    test_values = [[2, 3, 4],  # matches horizontally and diagonally
                    [3, 4, 5],
                    [4, 5, 0]]
     #create slot_machine instance
     test = SlotMachine()
     test.matrix = test_values
 
-    test.match(test.matrix)
-    test.diagonal(test.matrix)
+    test.horizontal_check(test.matrix)
+    test.diagonal_check(test.matrix)
 
     assert test.horizontal_winning_value == 'MIX BAR'
     assert test.diagonal_winning_value == "2-BAR!"
@@ -204,6 +204,8 @@ test()
 def example_slots():
     slots = SlotMachine()
     slots.create_matrix_values()
+    slots.diagonal_check(slots.matrix)
+    slots.horizontal_check(slots.matrix)
     slots.rep_matrix()
     print("\n")
     print("Horizontal Winnings: ", slots.horizontal_winning_value)
