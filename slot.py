@@ -1,4 +1,5 @@
 from random import randrange
+from itertools import permutations
 from graphics import *  # WINNER graphic that will display when player wins
 
 
@@ -8,15 +9,11 @@ class Player(object):
         self.tokens = 0
         self.luck = 0
 
-    def add_tokens(self, numtokens):
-        self.tokens += numtokens
+    def add_tokens(self, number_of_tokens):
+        self.tokens += number_of_tokens
 
     def has_balance(self):
-        if self.tokens == 0:
-            return False
-        else:
-            return True
-
+        return self.tokens > 0
 
 # slot machine will be based on 'lucky-7' 3-reel slot
 # with the values in each reel consisting of:
@@ -49,152 +46,167 @@ class Player(object):
 #	 [3-BAR!, 2-BAR!, 2-BAR!],
 #	 [2-BAR!,1-BAR!,1-BAR!]]
 
-class Slot_machine(object):
+
+class SlotMachine(object):
     def __init__(self):
         self.v = ['SIX!!!', 'LUCKY6', 'CHERRY', '3-BAR!', '2-BAR!', '1-BAR!'] 
         self.multiplier = 1
         self.wager = 0
-        self.map = []  # may be redundant
-        self.diagonal_winning_value = None
-        self.horizontal_winning_value = None
-        self.matrix = []  # may be redundant
+        self.diagonal_winning_value = 0
+        self.horizontal_winning_value = 0
+        self.matrix = [[], [], []]
 
-    def valid_bet(self, wagerSize):
-        """ Checks that player bet is 3 or less """
-        if wagerSize < 0 or wagerSize > 3:
-            return False
-        else:
-            return True
+    @staticmethod
+    def valid_bet(wager_size):
+        # Checks that player bet is 3 or less
+        return 0 < wager_size <= 3
 
-    def reel_values(self, value):
-        """Based on the value on display in the middle, 
-        calculates the values above and below on the reel"""
-        upper = 0
-        lower = 0
+    @staticmethod
+    def reel_values(value):
+        # Based on the value on display in the middle, calculates the values above and below on the reel.
+        upper, lower = 0, 0
         if value == 0:
             upper, lower = 5, 1
         elif value == 5:
             upper, lower = 4, 0
         else:
             upper, lower = value - 1, value + 1
-        return upper, lower
+        return [upper, lower]
 
-    def __matrix(self):
-        """creates a matrix with numbers that correspond to each value in the 
-        list 'v' """
-        num1, num2, num3 = randrange(6), randrange(6), randrange(6)
-        matrix = [[], [], []]
-        matrix[0].append(self.reel_values(num1)[0])
-        matrix[0].append(self.reel_values(num2)[0])
-        matrix[0].append(self.reel_values(num3)[0])
-        matrix[1].append(num1)
-        matrix[1].append(num2)
-        matrix[1].append(num3)
-        matrix[2].append(self.reel_values(num1)[1])
-        matrix[2].append(self.reel_values(num2)[1])
-        matrix[2].append(self.reel_values(num3)[1])
-        return matrix
+    def create_matrix_values(self):
+        # creates a matrix with numbers that correspond to each value in the list 'v'.
+        numbers = [randrange(6) for r in range(3)]
+        # Top Row
+        for n in numbers:
+            self.matrix[0].append(self.reel_values(n)[0])
+        # Middle Row
+            self.matrix[1].append(n)
+        # Bottom Row
+            self.matrix[2].append(self.reel_values(n)[1])
+
+        return self.matrix
 
     def rep_matrix(self):
-        """ Generates a matrix and then converts it to slot values for display"""
-        matrix = self.__matrix()
-        repped = [[self.v[matrix[0][0]], self.v[matrix[0][1]], self.v[matrix[0][2]]],
-                  [self.v[matrix[1][0]], self.v[matrix[1][1]], self.v[matrix[1][2]]],
-                  [self.v[matrix[2][0]], self.v[matrix[2][1]], self.v[matrix[2][2]]]]
+        # Generates a matrix and then converts it to slot values for display
+        matrix = self.create_matrix_values()
+        repped = [[self.v[int(matrix[0][i])] for i in range(3)],
+                  [self.v[int(matrix[1][i])] for i in range(3)],
+                  [self.v[int(matrix[2][i])] for i in range(3)]]
         self.package_matrix(repped)
+
+        # Kept return for testing purposes(?)
         return matrix, repped
 
-    def package_matrix(self, matrix):
-        """ Prints each row on a separate line"""
-        print matrix[0]
-        print matrix[1]
-        print matrix[2]
+    @staticmethod
+    def package_matrix(matrix):
+        # Prints each row on a separate line
+        for row_number in range(3):
+            print('  '.join(matrix[row_number]))
+
+    @staticmethod
+    def all_same(values):
+        # Checks to see if all values within a list are the same.
+        return not values or values.count(values[0]) == len(values)
 
     def diagonal(self, matrix):
-        """Check if there is a match along the diagonals of the matrix and 
-        returns the winning value eg. SIX!!!, LUCKY6 or just BAR for any 
-        combination of 3-BAR, 2-BAR or 1-BAR"""
+        """Check if there is a match along the diagonals of the matrix and returns the winning value
+        eg. SIX!!!, LUCKY6 or just BAR for any combination of 3-BAR, 2-BAR or 1-BAR."""
         # Assign matrix elements to variables to make it easier to view
-        if self.horizontal_winning_value == None:
-            _00, _01, _02 = matrix[0][0], matrix[0][1], matrix[0][2]
-            _10, _11, _12 = matrix[1][0], matrix[1][1], matrix[1][2]
-            _20, _21, _22 = matrix[2][0], matrix[2][1], matrix[2][2]
-            if _00 == _11 and _11 == _22:
-                self.diagonal_winning_value = self.v[_00]
-            elif _02 == _11 and _11 == _20:
-                self.diagonal_winning_value = self.v[_02]
-            elif (_00 == 3 or _00 == 4 or _00 == 5) and (_11 == 3 or _11 == 4
-                or _11 == 5) and (_22 == 3 or _22 == 4 or _22 == 5):
-                self.diagonal_winning_value = 'mix_bar'
-            elif (_02 == 3 or _02 == 4 or _02 == 5) and (_11 == 3 or _11 == 4 or
-                 _11 == 5) and (_20 == 3 or _20 == 4 or _20 == 5):
-                self.diagonal_winning_value = 'mix_bar'
-            else:
-                self.diagonal_winning_value = None
 
+        # if not self.diagonal_winning_value:
+        first_diagonal = (matrix[0][0], matrix[1][1], matrix[2][2])
+        second_diagonal = (matrix[2][0], matrix[1][1], matrix[0][2])
+        mix_bar_values = list(permutations([3, 4, 5], 3))
 
-    def match(self, matrix):
-        """ Checks the horizontal row for a match, and returns the
-         values in the row if they do match."""
-        horizontal = []
-        for i in matrix[1]:
-            horizontal.append(i)
-        if horizontal[0] == horizontal[1] and horizontal[1] == horizontal[2]:
-            self.horizontal_winning_value = self.v[horizontal[0]]
-        elif (horizontal[0] == 3 or horizontal[0] == 4 or horizontal[0] == 5) and (horizontal[1] == 3 or
-            horizontal[1] == 4 or horizontal[1] == 5) and (horizontal[2] == 3 or horizontal[2] == 4 or
-            horizontal[2] == 5):
-            self.horizontal_winning_value = 'mix_bar'
+        if self.all_same(first_diagonal):
+            self.diagonal_winning_value = self.v[first_diagonal[0]]
+        elif self.all_same(second_diagonal):
+            self.diagonal_winning_value = self.v[second_diagonal[0]]
+        elif first_diagonal in mix_bar_values or second_diagonal in mix_bar_values:
+            self.diagonal_winning_value = "MIX BAR"
         else:
-            self.horizontal_winning_value = None
+            self.diagonal_winning_value = 0
+
+    # May want to rename this function to something that directly relates to the horizontal middle row.
+    def match(self, matrix):
+        # Checks the horizontal row for a match, and returns the values in the row if they do match.
+        horizontal = [i for i in matrix[1]]
+        possible_horizontal_permutations = list(permutations([horizontal[i] for i in range(3)], 3))
+
+        if self.all_same(horizontal):
+            self.horizontal_winning_value = self.v[horizontal[0]]
+        elif (3, 4, 5) in possible_horizontal_permutations:
+            self.horizontal_winning_value = "MIX BAR"
+        else:
+            self.horizontal_winning_value = 0
 
     def multiplier(self):  # redundant function
-        if self.horizontal_winning_value is not None:
+        if self.horizontal_winning_value:
             self.multiplier = 1
-        elif self.diagonal_winning_value is not None:
+        elif self.diagonal_winning_value:
             self.multiplier = 0.75
 
     def place_bet(self):
-        #sets self.wager to whatever the person bets
+        # sets self.wager to whatever the person bets
+        # print("Place a maximum bet of 3 tokens./n")
+        # try:
+        #     get_bet = int(input("How much would you like to bet?"))
+        #     self.wager = get_bet
+        # except ValueError:
+        #     print("That's not a valid bet!")
+        #     self.place_bet()
         pass
 
     def payouts(self):
-        payouts = { 'SIX!!!':1500, 'LUCKY6':250, 'CHERRY':150,
-                    '3-BAR!':100, '2-BAR!':50, '1-BAR':20,
-                    'mix_bar':3}
-        if self.horizontal_winning_value != None:
-            return self.wager *  payouts[self.horizontal_winning_value]
-        elif self.diagonal_winning_value != None:
+        payouts = {
+            'SIX!!!': 1500, 'LUCKY6': 250, 'CHERRY': 150,
+            '3-BAR!': 100, '2-BAR!': 50, '1-BAR': 20, 'MIX BAR': 3
+        }
+
+        if self.horizontal_winning_value:
+            return self.wager * payouts[self.horizontal_winning_value]
+        elif self.diagonal_winning_value:
             return (self.wager * payouts[self.diagonal_winning_value]) * 0.75
 
 
 def test():
-    test_values = [[4, 2, 2], #matches horizontally and vertically
-                   [5, 3, 3],
-                   [0, 4, 4]]
+    test_values = [[2, 3, 4], #matches horizontally and diagonally
+                   [3, 4, 5],
+                   [4, 5, 0]]
     #create slot_machine instance
-    test = Slot_machine()
+    test = SlotMachine()
+    test.matrix = test_values
 
-    test.match(test_values)
-    test.diagonal(test_values)
-    assert test.horizontal_winning_value == 'mix_bar'
-    assert test.diagonal_winning_value == None
-    
-    spin = test.rep_matrix()[0]
-    test.match(spin)
-    test.diagonal(spin)
-    #test.payout()
+    test.match(test.matrix)
+    test.diagonal(test.matrix)
 
-    print "horizontal: ", test.horizontal_winning_value
-    print "diagonal: ", test.diagonal_winning_value
+    assert test.horizontal_winning_value == 'MIX BAR'
+    assert test.diagonal_winning_value == "2-BAR!"
+
+    # spin = test.rep_matrix()[0]
+    # print(spin)
+    # test.match(spin)
+    # test.diagonal(spin)
+    # #test.payout()
+
+    # print("horizontal: ", test.horizontal_winning_value)
+    # print("diagonal: ", test.diagonal_winning_value)
 
     player1 = Player('Alan')
     assert player1.tokens == 0
     player1.add_tokens(100)
     assert player1.tokens == 100
 
-
 test()
 
 
+# Made sure the above test worked before creating the random one.
+def example_slots():
+    slots = SlotMachine()
+    slots.create_matrix_values()
+    slots.rep_matrix()
+    print("\n")
+    print("Horizontal Winnings: ", slots.horizontal_winning_value)
+    print("Diagonal Winnings: ", slots.diagonal_winning_value)
+example_slots()
 
