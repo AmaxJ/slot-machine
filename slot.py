@@ -106,8 +106,8 @@ class SlotMachine(object):
     @staticmethod
     def all_same(values):
         # Checks to see if all values within a list are the same.
-        # return not values or values.count(values[0]) == len(values)
-        return all([values[0] == value for value in values])
+        return not values or values.count(values[0]) == len(values)
+        # return all([values[0] == value for value in values])
 
     def diagonal_check(self, matrix):
         """Check if there is a match along the diagonals of the matrix and returns the winning value
