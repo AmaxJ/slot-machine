@@ -12,6 +12,12 @@ class Player(object):
     def add_tokens(self, number_of_tokens):
         self.tokens += number_of_tokens
 
+    def bet(self, amount):
+        if self.tokens >= amount:
+            self.tokens -= amount
+        else:
+            print("You do not have enough tokens to make that bet.")
+
     def has_balance(self):
         return self.tokens > 0
 
@@ -136,22 +142,27 @@ class SlotMachine(object):
         else:
             self.horizontal_winning_value = 0
 
-    def multiplier(self):  # redundant function
-        if self.horizontal_winning_value:
-            self.multiplier = 1
-        elif self.diagonal_winning_value:
-            self.multiplier = 0.75
+    # def multiplier(self):  # redundant function
+    #     if self.horizontal_winning_value:
+    #         self.multiplier = 1
+    #     elif self.diagonal_winning_value:
+    #         self.multiplier = 0.75
 
-    def place_bet(self):
+    def place_bet(self, player):
         # sets self.wager to whatever the person bets
-        print("Place a bet (max: 3)./n")
+        print("Place a bet (max: 3). \n")
         try:
-            get_bet = int(input("How much would you like to bet?"))
-            self.wager = get_bet
-            print("You are betting {} tokens".format(self.wager))
+            print("How much would you like to bet?")
+            self.wager = int(input("Tokens: "))
+            if self.valid_bet(self.wager):
+                player.bet(self.wager)
+                print("You are betting {} tokens".format(self.wager))
+            else:
+                print("That amount is not allowed.")
+                self.place_bet(player)
         except ValueError:
             print("That's not a valid bet!")
-            self.place_bet()
+            self.place_bet(player)
 
     def payouts(self, player):
         payouts = {

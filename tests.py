@@ -1,4 +1,4 @@
-from slots import SlotMachine, Player
+from slot import SlotMachine, Player
 
 def test():
     test_values = [[2, 3, 4],  # matches horizontally and diagonally
@@ -34,12 +34,23 @@ test()
 # Made sure the above test worked before creating the random one.
 def example_slots():
     slots = SlotMachine()
-    slots.create_matrix_values()
-    slots.diagonal_check(slots.matrix)
-    slots.horizontal_check(slots.matrix)
-    slots.rep_matrix()
-    print("\n")
-    print("Horizontal Winnings: ", slots.horizontal_winning_value)
-    print("Diagonal Winnings: ", slots.diagonal_winning_value)
+    alan = Player('Alan')
+    # initial given tokens
+    alan.add_tokens(10)
+
+    while alan.has_balance():
+        slots.place_bet(alan)
+        slots.create_matrix_values()
+        slots.diagonal_check(slots.matrix)
+        slots.horizontal_check(slots.matrix)
+        slots.rep_matrix()
+        print("\n")
+        print("Horizontal Winnings: ", slots.horizontal_winning_value)
+        print("Diagonal Winnings: ", slots.diagonal_winning_value)
+        slots.payouts(alan)
+        print("You currently have {} tokens.".format(alan.tokens))
+        slots.matrix = [[],[],[]]
+    else:
+        print("No more tokens")
 example_slots()
 
