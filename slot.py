@@ -10,10 +10,8 @@ class Player(object):
         self.luck = 0
 
     def add_tokens(self, number_of_tokens):
-        try:
-            self.tokens += number_of_tokens
-        except TypeError:
-            print "Please enter the number of tokens you wish to add."
+        self.tokens += number_of_tokens
+        
             
     def bet(self, amount):
         if self.tokens >= amount:
@@ -80,6 +78,7 @@ class SlotMachine(object):
 
     def create_matrix_values(self):
         # creates a matrix with numbers that correspond to each value in the list 'v'.
+        self.matrix = [[],[],[]]
         numbers = [randrange(6) for r in range(3)]
         # Top Row
         for n in numbers:
@@ -163,7 +162,7 @@ class SlotMachine(object):
             else:
                 print("That amount is not allowed.")
                 self.place_bet(player)
-        except ValueError:
+        except ValueError, TypeError:
             print("That's not a valid bet!")
             self.place_bet(player)
 
