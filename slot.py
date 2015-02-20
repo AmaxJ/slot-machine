@@ -12,9 +12,16 @@ class Player(object):
     def add_tokens(self, number_of_tokens):
         self.tokens += number_of_tokens
 
+    def bet(self, amount):
+        if self.tokens >= amount:
+            self.tokens -= amount
+        else:
+            print("You do not have enough tokens to make that bet.")
+
     def has_balance(self):
         return self.tokens > 0
 
+# Move a formatted version of this info to the readme(?)
 # slot machine will be based on 'lucky-7' 3-reel slot
 # with the values in each reel consisting of:
 # In order of value (and order on the reel?):
@@ -40,11 +47,6 @@ class Player(object):
 
 # 1x payout for horizontal match
 # .75x payout for diagonal match
-
-#readout will look like:
-#	[[CHERRY,3-BAR!,3-BAR!],
-#	 [3-BAR!, 2-BAR!, 2-BAR!],
-#	 [2-BAR!,1-BAR!,1-BAR!]]
 
 
 class SlotMachine(object):
@@ -140,75 +142,42 @@ class SlotMachine(object):
         else:
             self.horizontal_winning_value = 0
 
-    def multiplier(self):  # redundant function
-        if self.horizontal_winning_value:
-            self.multiplier = 1
-        elif self.diagonal_winning_value:
-            self.multiplier = 0.75
+    # def multiplier(self):  # redundant function
+    #     if self.horizontal_winning_value:
+    #         self.multiplier = 1
+    #     elif self.diagonal_winning_value:
+    #         self.multiplier = 0.75
 
-    def place_bet(self):
+    def place_bet(self, player):
         # sets self.wager to whatever the person bets
-        # print("Place a maximum bet of 3 tokens./n")
-        # try:
-        #     get_bet = int(input("How much would you like to bet?"))
-        #     self.wager = get_bet
-        # except ValueError:
-        #     print("That's not a valid bet!")
-        #     self.place_bet()
-        pass
+        print("Place a bet (max: 3). \n")
+        try:
+            print("How much would you like to bet?")
+            self.wager = int(input("Tokens: "))
+            if self.valid_bet(self.wager):
+                player.bet(self.wager)
+                print("You are betting {} tokens".format(self.wager))
+            else:
+                print("That amount is not allowed.")
+                self.place_bet(player)
+        except ValueError:
+            print("That's not a valid bet!")
+            self.place_bet(player)
 
-    def payouts(self):
+    def payouts(self, player):
         payouts = {
             'SIX!!!': 1500, 'LUCKY6': 250, 'CHERRY': 150,
             '3-BAR!': 100, '2-BAR!': 50, '1-BAR': 20, 'MIX BAR': 3
         }
 
+        # Can you win only horizontal or diagonal and not both?
         if self.horizontal_winning_value:
-            return self.wager * payouts[self.horizontal_winning_value]
+            payout_value = payouts[self.horizontal_winning_value]
+            print("You have won {} tokens".format(payout_value))
+            player.add_tokens(self.wager * payout_value)
         elif self.diagonal_winning_value:
-            return (self.wager * payouts[self.diagonal_winning_value]) * 0.75
-
-
-def test():
-    test_values = [[2, 3, 4],  # matches horizontally and diagonally
-                   [3, 4, 5],
-                   [4, 5, 0]]
-    #create slot_machine instance
-    test = SlotMachine()
-    test.matrix = test_values
-
-    test.horizontal_check(test.matrix)
-    test.diagonal_check(test.matrix)
-
-    assert test.horizontal_winning_value == 'MIX BAR'
-    assert test.diagonal_winning_value == "2-BAR!"
-
-    # spin = test.rep_matrix()[0]
-    # print(spin)
-    # test.match(spin)
-    # test.diagonal(spin)
-    # #test.payout()
-
-    # print("horizontal: ", test.horizontal_winning_value)
-    # print("diagonal: ", test.diagonal_winning_value)
-
-    player1 = Player('Alan')
-    assert player1.tokens == 0
-    player1.add_tokens(100)
-    assert player1.tokens == 100
-
-test()
-
-
-# Made sure the above test worked before creating the random one.
-def example_slots():
-    slots = SlotMachine()
-    slots.create_matrix_values()
-    slots.diagonal_check(slots.matrix)
-    slots.horizontal_check(slots.matrix)
-    slots.rep_matrix()
-    print("\n")
-    print("Horizontal Winnings: ", slots.horizontal_winning_value)
-    print("Diagonal Winnings: ", slots.diagonal_winning_value)
-example_slots()
-
+            payout_value = payouts[self.diagonal_winning_value]
+            print("You have won {} tokens".format(payout_value))
+            player.add_tokens(self.wager * payout_value * 0.75)
+        else:
+            print("Won $0. Try again!")
