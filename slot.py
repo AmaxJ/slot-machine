@@ -167,7 +167,7 @@ class SlotMachine(object):
     def payouts(self, player):
         payouts = {
             'SIX!!!': 1500, 'LUCKY6': 250, 'CHERRY': 150,
-            '3-BAR!': 100, '2-BAR!': 50, '1-BAR': 20, 'MIX BAR': 3
+            '3-BAR!': 100, '2-BAR!': 50, '1-BAR!': 20, 'MIX BAR': 3
         }
 
         # Can you win only horizontal or diagonal and not both?
