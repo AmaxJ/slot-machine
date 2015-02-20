@@ -10,8 +10,11 @@ class Player(object):
         self.luck = 0
 
     def add_tokens(self, number_of_tokens):
-        self.tokens += number_of_tokens
-
+        try:
+            self.tokens += number_of_tokens
+        except TypeError:
+            print "Please enter the number of tokens you wish to add."
+            
     def bet(self, amount):
         if self.tokens >= amount:
             self.tokens -= amount
