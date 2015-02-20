@@ -50,6 +50,7 @@ class Player(object):
 
 
 class SlotMachine(object):
+
     def __init__(self):
         self.v = ['SIX!!!', 'LUCKY6', 'CHERRY', '3-BAR!', '2-BAR!', '1-BAR!'] 
         self.multiplier = 1
@@ -57,6 +58,8 @@ class SlotMachine(object):
         self.diagonal_winning_value = 0
         self.horizontal_winning_value = 0
         self.matrix = [[], [], []]
+        self.mix_bar_value = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
+
 
     @staticmethod
     def valid_bet(wager_size):
@@ -118,13 +121,12 @@ class SlotMachine(object):
 
         first_diagonal = (matrix[0][0], matrix[1][1], matrix[2][2])
         second_diagonal = (matrix[2][0], matrix[1][1], matrix[0][2])
-        mix_bar_values = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
 
         if self.all_same(first_diagonal):
             self.diagonal_winning_value = self.v[first_diagonal[0]]
         elif self.all_same(second_diagonal):
             self.diagonal_winning_value = self.v[second_diagonal[0]]
-        elif first_diagonal in mix_bar_values or second_diagonal in mix_bar_values:
+        elif first_diagonal in self.mix_bar_value or second_diagonal in self.mix_bar_value:
             self.diagonal_winning_value = "MIX BAR"
         else:
             self.diagonal_winning_value = 0
@@ -133,20 +135,13 @@ class SlotMachine(object):
     def horizontal_check(self, matrix):
         # Checks the horizontal row for a match, and returns the values in the row if they do match.
         horizontal = [i for i in matrix[1]]
-        mix_bar_values = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
 
         if self.all_same(horizontal):
             self.horizontal_winning_value = self.v[horizontal[0]]
-        elif tuple(horizontal) in mix_bar_values:
+        elif tuple(horizontal) in self.mix_bar_value:
             self.horizontal_winning_value = "MIX BAR"
         else:
             self.horizontal_winning_value = 0
-
-    # def multiplier(self):  # redundant function
-    #     if self.horizontal_winning_value:
-    #         self.multiplier = 1
-    #     elif self.diagonal_winning_value:
-    #         self.multiplier = 0.75
 
     def place_bet(self, player):
         # sets self.wager to whatever the person bets
@@ -167,7 +162,7 @@ class SlotMachine(object):
     def payouts(self, player):
         payouts = {
             'SIX!!!': 1500, 'LUCKY6': 250, 'CHERRY': 150,
-            '3-BAR!': 100, '2-BAR!': 50, '1-BAR': 20, 'MIX BAR': 3
+            '3-BAR!': 100, '2-BAR!': 50, '1-BAR!': 20, 'MIX BAR': 3
         }
 
         # Can you win only horizontal or diagonal and not both?
