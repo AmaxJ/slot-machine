@@ -78,7 +78,7 @@ class SlotMachine(object):
 
     def create_matrix_values(self):
         # creates a matrix with numbers that correspond to each value in the list 'v'.
-        self.matrix = [[],[],[]]
+        self.matrix = [[],[],[]] #resets matrix values
         numbers = [randrange(6) for r in range(3)]
         # Top Row
         for n in numbers:
