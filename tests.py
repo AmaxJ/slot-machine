@@ -49,7 +49,6 @@ def example_slots():
         print("Diagonal Winnings: ", slots.diagonal_winning_value)
         slots.payouts(alan)
         print("You currently have {} tokens.".format(alan.tokens))
-        slots.matrix = [[],[],[]]
     else:
         print("No more tokens")
 example_slots()
