@@ -78,12 +78,17 @@ class GameTests(unittest.TestCase):
         pass
 
     def test_horizontalPayouts(self):
+        """Should multiply the wager amount by the associated
+        multiplier value, and add the result to Player.tokens"""
         self.slot.horizontal_check(self.slot.matrix) #MIX BAR
         self.slot.wager = 3
         self.slot.payouts(self.user)
         self.assertEqual(self.user.tokens, 9)
 
     def test_diagonalPayouts(self):
+        """Should multiply the wager amount by the associated
+        multiplier value and 0.75, then add the result to 
+        Player.tokens"""
         self.slot.diagonal_check(self.slot.matrix) #2-BAR!
         self.slot.wager = 3
         self.slot.payouts(self.user)
