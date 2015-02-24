@@ -70,13 +70,25 @@ class GameTests(unittest.TestCase):
     def setUp(self):
         self.slot = SlotMachine()
         self.user = Player('User')
-        self.user.add_tokens(10)
+        self.slot.matrix = [[2, 3, 4], 
+                            [3, 4, 5],
+                            [4, 5, 0]]
 
     def test_placeBets(self):
         pass
 
-    def test_payouts(self):
-        pass
+    def test_horizontalPayouts(self):
+        self.slot.horizontal_check(self.slot.matrix) #MIX BAR
+        self.slot.wager = 3
+        self.slot.payouts(self.user)
+        self.assertEqual(self.user.tokens, 9)
+
+    def test_diagonalPayouts(self):
+        self.slot.diagonal_check(self.slot.matrix) #2-BAR!
+        self.slot.wager = 3
+        self.slot.payouts(self.user)
+        self.assertEqual(self.user.tokens, 112.5)
+
 
 
 if __name__ == '__main__':
