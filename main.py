@@ -4,6 +4,8 @@ import graphics
 yes = ("yesyeayeyayahyyeahyup")
 no = ("nonopenahn")
 
+slot = SlotMachine()
+
 def broke_test(player):
 	while not player.has_balance():	
 		print("Looks like your all out of tokens!")
@@ -11,7 +13,8 @@ def broke_test(player):
 		if resume.lower() in yes:
 			try:
 				player.add_tokens(int(raw_input("Enter the number of tokens you'd like to add: ")))
-				print player.tokens
+				if player.has_balance():
+					main()
 			except ValueError or TypeError:
 				print("Sorry, it seems you didn't enter a number. ")
 				player.add_tokens(int(raw_input("Enter the number of tokens you'd like to add: ")))
@@ -31,15 +34,12 @@ def main():
 	user = Player(raw_input("What's your name, gambler? "))
 
 	print("Hello, {}! \nTry your luck on the Lucky-6 slot machine!".format(user.name))
-	print("\n")
-	slot = SlotMachine()
 	user.add_tokens(6)
 	while user.has_balance():
 		slot.place_bet(user)
-		slot.create_matrix_values()
+		slot.rep_matrix()
 		slot.diagonal_check(slot.matrix)
 		slot.horizontal_check(slot.matrix)
-		slot.rep_matrix()
 		slot.payouts(user)
 		#slot.matrix = [[],[],[]]
 		print("Your current balance is {}.".format(user.tokens))
