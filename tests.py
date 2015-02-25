@@ -92,7 +92,7 @@ class GameTests(unittest.TestCase):
         self.slot.diagonal_check(self.slot.matrix) #2-BAR!
         self.slot.wager = 3
         self.slot.payouts(self.user)
-        self.assertEqual(self.user.tokens, 112.5)
+        self.assertEqual(self.user.tokens, 112)
 
 
 

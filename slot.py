@@ -1,3 +1,4 @@
+from math import floor as fl
 from random import randrange
 from itertools import permutations
 from graphics import *  # WINNER graphic that will display when player wins
@@ -177,11 +178,12 @@ class SlotMachine(object):
         # Can you win only horizontal or diagonal and not both?
         if self.horizontal_winning_value:
             payout_value = payouts[self.horizontal_winning_value]
-            print("You have won {} tokens".format(payout_value))
+            print("You have won {} tokens!".format(self.wager * payout_value))
             player.add_tokens(self.wager * payout_value)
         elif self.diagonal_winning_value:
             payout_value = payouts[self.diagonal_winning_value]
-            print("You have won {} tokens".format(payout_value))
-            player.add_tokens(self.wager * payout_value * 0.75)
+            floor_payout = fl(self.wager * payout_value * 0.75)
+            print("You have won {} tokens!".format(floor_payout))
+            player.add_tokens(floor_payout)
         else:
-            print("Won $0. Try again!")
+            print("Won 0 tokens. Try again!")
