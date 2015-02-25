@@ -158,14 +158,14 @@ class SlotMachine(object):
         print("Place a bet (max: 3). \n")
         try:
             print("How much would you like to bet?")
-            self.wager = int(input("Tokens: "))
+            self.wager = int(raw_input("Tokens: "))
             if self.valid_bet(self.wager):
                 player.bet(self.wager)
                 print("You are betting {} tokens".format(self.wager))
             else:
                 print("That amount is not allowed.")
                 self.place_bet(player)
-        except ValueError:
+        except ValueError, TypeError:
             print("That's not a valid bet!")
             self.place_bet(player)
 
