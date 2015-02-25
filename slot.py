@@ -1,3 +1,4 @@
+from math import floor as fl
 from random import randrange
 from itertools import permutations
 from graphics import *  # WINNER graphic that will display when player wins
@@ -10,8 +11,11 @@ class Player(object):
         self.luck = 0
 
     def add_tokens(self, number_of_tokens):
-        self.tokens += number_of_tokens
-
+        try:
+            self.tokens += number_of_tokens
+        except TypeError:
+            print "Please enter the number of tokens you wish to add."
+            
     def bet(self, amount):
         if self.tokens >= amount:
             self.tokens -= amount
@@ -80,6 +84,7 @@ class SlotMachine(object):
 
     def create_matrix_values(self):
         # creates a matrix with numbers that correspond to each value in the list 'v'.
+        self.matrix = [[],[],[]] #resets matrix values
         numbers = [randrange(6) for r in range(3)]
         # Top Row
         for n in numbers:
@@ -148,14 +153,14 @@ class SlotMachine(object):
         print("Place a bet (max: 3). \n")
         try:
             print("How much would you like to bet?")
-            self.wager = int(input("Tokens: "))
+            self.wager = int(raw_input("Tokens: "))
             if self.valid_bet(self.wager):
                 player.bet(self.wager)
                 print("You are betting {} tokens".format(self.wager))
             else:
                 print("That amount is not allowed.")
                 self.place_bet(player)
-        except ValueError:
+        except ValueError, TypeError:
             print("That's not a valid bet!")
             self.place_bet(player)
 
@@ -168,11 +173,12 @@ class SlotMachine(object):
         # Can you win only horizontal or diagonal and not both?
         if self.horizontal_winning_value:
             payout_value = payouts[self.horizontal_winning_value]
-            print("You have won {} tokens".format(payout_value))
+            print("You have won {} tokens!".format(self.wager * payout_value))
             player.add_tokens(self.wager * payout_value)
         elif self.diagonal_winning_value:
             payout_value = payouts[self.diagonal_winning_value]
-            print("You have won {} tokens".format(payout_value))
-            player.add_tokens(self.wager * payout_value * 0.75)
+            floor_payout = fl(self.wager * payout_value * 0.75)
+            print("You have won {} tokens!".format(floor_payout))
+            player.add_tokens(floor_payout)
         else:
-            print("Won $0. Try again!")
+            print("Won 0 tokens. Try again!")

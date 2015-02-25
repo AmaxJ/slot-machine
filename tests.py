@@ -1,56 +1,100 @@
+import unittest, mock
 from slot import SlotMachine, Player
 
-def test():
-    test_values = [[2, 3, 4],  # matches horizontally and diagonally
-                   [3, 4, 5],
-                   [4, 5, 0]]
-    #create slot_machine instance
-    test = SlotMachine()
-    test.matrix = test_values
 
-    test.horizontal_check(test.matrix)
-    test.diagonal_check(test.matrix)
+class SlotTests(unittest.TestCase):
 
-    assert test.horizontal_winning_value == 'MIX BAR'
-    assert test.diagonal_winning_value == "2-BAR!"
+    def setUp(self):
+        self.slot = SlotMachine()
 
-    # spin = test.rep_matrix()[0]
-    # print(spin)
-    # test.match(spin)
-    # test.diagonal(spin)
-    # #test.payout()
+    def test_checkMatches(self):
+        """horizontal_winning_value should == "MIX BAR" when [3,4,5] is 
+        slotMachine.matrix[1] and diagonal_winning_value should == "2-BAR!"
+        when [4,4,4] in matrix[0][2], [1][1], and [2][0] """
+        self.slot.matrix = [[2, 3, 4],  # matches horizontally and diagonally
+                            [3, 4, 5],
+                            [4, 5, 0]]
 
-    # print("horizontal: ", test.horizontal_winning_value)
-    # print("diagonal: ", test.diagonal_winning_value)
+        self.slot.horizontal_check(self.slot.matrix)
+        self.slot.diagonal_check(self.slot.matrix)
 
-    player1 = Player('Alan')
-    assert player1.tokens == 0
-    player1.add_tokens(100)
-    assert player1.tokens == 100
+        self.assertEqual(self.slot.horizontal_winning_value, "MIX BAR")
+        self.assertTrue(self.slot.diagonal_winning_value == "2-BAR!", True)
 
-test()
+    def test_generateMatrix(self):
+        """Should return a 2-d list with 3 elements in each list"""
+        self.slot.create_matrix_values()
+        self.assertEqual(len(self.slot.matrix), 3)
+        for element in self.slot.matrix:
+            self.assertEqual(len(element), 3)
+
+    def test_repMatrix(self):
+        """Should map generated values to appropriate values in value 
+        list (SlotMachine.v)"""
+        _,repped_matrix = self.slot.rep_matrix()
+        for element in repped_matrix:
+            for item in element:
+                self.assertIn(item, self.slot.v)
 
 
-# Made sure the above test worked before creating the random one.
-def example_slots():
-    slots = SlotMachine()
-    alan = Player('Alan')
-    # initial given tokens
-    alan.add_tokens(10)
+class PlayerTests(unittest.TestCase):
+    def setUp(self):
+        self.user = Player('User')
 
-    while alan.has_balance():
-        slots.place_bet(alan)
-        slots.create_matrix_values()
-        slots.diagonal_check(slots.matrix)
-        slots.horizontal_check(slots.matrix)
-        slots.rep_matrix()
-        print("\n")
-        print("Horizontal Winnings: ", slots.horizontal_winning_value)
-        print("Diagonal Winnings: ", slots.diagonal_winning_value)
-        slots.payouts(alan)
-        print("You currently have {} tokens.".format(alan.tokens))
-        slots.matrix = [[],[],[]]
-    else:
-        print("No more tokens")
-example_slots()
+    def test_balance(self):
+        """User balance should equal whatever amount is added
+        via add_tokens() method"""
+        self.assertIs(self.user.tokens, 0)
+        self.user.add_tokens(10)
+        self.assertEqual(self.user.tokens, 10)
 
+        self.user.add_tokens(20)
+        self.assertEqual(self.user.tokens, 30)
+
+    def test_betMethod(self):
+        """User balance should decrease by whatever amount is
+        passed to bet() method"""
+        self.user.add_tokens(100)
+        self.user.bet(200)
+        self.assertEqual(self.user.tokens, 100)
+        self.user.bet(50)
+        self.assertEqual(self.user.tokens, 50)
+        self.user.bet(25)
+        self.assertEqual(self.user.tokens, 25)
+        self.user.bet(25)
+        self.assertEqual(self.user.tokens, 0)
+
+
+class GameTests(unittest.TestCase):
+
+    def setUp(self):
+        self.slot = SlotMachine()
+        self.user = Player('User')
+        self.slot.matrix = [[2, 3, 4], 
+                            [3, 4, 5],
+                            [4, 5, 0]]
+
+    def test_placeBets(self):
+        pass
+
+    def test_horizontalPayouts(self):
+        """Should multiply the wager amount by the associated
+        multiplier value, and add the result to Player.tokens"""
+        self.slot.horizontal_check(self.slot.matrix) #MIX BAR
+        self.slot.wager = 3
+        self.slot.payouts(self.user)
+        self.assertEqual(self.user.tokens, 9)
+
+    def test_diagonalPayouts(self):
+        """Should multiply the wager amount by the associated
+        multiplier value and 0.75, then add the result to 
+        Player.tokens"""
+        self.slot.diagonal_check(self.slot.matrix) #2-BAR!
+        self.slot.wager = 3
+        self.slot.payouts(self.user)
+        self.assertEqual(self.user.tokens, 112)
+
+
+
+if __name__ == '__main__':
+    unittest.main()
