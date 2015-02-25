@@ -4,11 +4,17 @@ import graphics
 yes = ("yesyeayeyayahyyeahyup")
 no = ("nonopenahn")
 
+print graphics.title
+raw_input("Press enter to start!")
+print("\n")
 slot = SlotMachine()
+user = Player(raw_input("What's your name, gambler? "))
+print("\n")
+user.add_tokens(3)
 
-def broke_test(player):
+
+def rebuy(player):
 	while not player.has_balance():	
-		print("Looks like your all out of tokens!")
 		resume = raw_input("Would you like to keep playing? ('y','n') ")
 		if resume.lower() in yes:
 			try:
@@ -17,34 +23,36 @@ def broke_test(player):
 					main()
 			except ValueError or TypeError:
 				print("Sorry, it seems you didn't enter a number. ")
-				player.add_tokens(int(raw_input("Enter the number of tokens you'd like to add: ")))
+				rebuy(player)
 		elif resume.lower() in no:
-			print("Hope you enjoyed the game!")
 			print("\n")
-			raw_input('Hit enter to quit.')
+			raw_input('THANKS FOR PLAYING! HIT ENTER TO QUIT.')
 			quit(0)
 		else:
-			print("P")
-			print("\n")
+			main()
 	
 def main():
-	print graphics.title
-	raw_input("Press enter to start!")
+	raw_input("***** PRESS ENTER TO CONTINUE *****")
 	print("\n")
-	user = Player(raw_input("What's your name, gambler? "))
-
-	print("Hello, {}! \nTry your luck on the Lucky-6 slot machine!".format(user.name))
-	user.add_tokens(6)
+	print("Hello, {}! Ready to try your luck on the Lucky-6 slot machine?".format(user.name))
+	print("\n")
+	raw_input("***** PRESS ENTER TO CONTINUE *****")
+	print("\n")
+	print("Your current balance is {}.".format(user.tokens))
 	while user.has_balance():
 		slot.place_bet(user)
-		slot.rep_matrix()
+		print("\n")
+		raw_input("***** PRESS ENTER TO SPIN!! *****")
+		print("\n")
+		slot.represent_matrix()
 		slot.diagonal_check(slot.matrix)
 		slot.horizontal_check(slot.matrix)
+		print("\n")
 		slot.payouts(user)
-		#slot.matrix = [[],[],[]]
 		print("Your current balance is {}.".format(user.tokens))
 	else:
-		broke_test(user)
+		print("Looks like your all out of tokens!")
+		rebuy(user)
 
 
 
@@ -52,4 +60,6 @@ def main():
 
 if __name__ == '__main__': 
 	main()
+
+
 

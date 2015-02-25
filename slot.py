@@ -4,6 +4,10 @@ from itertools import permutations
 from graphics import *  # WINNER graphic that will display when player wins
 
 
+class InsufficientFunds(Exception):
+    pass
+
+
 class Player(object):
     def __init__(self, name):
         self.name = name
@@ -18,7 +22,7 @@ class Player(object):
         if self.tokens >= amount:
             self.tokens -= amount
         else:
-            print("You do not have enough tokens to make that bet.")
+            raise(InsufficientFunds("You do not have enough tokens to make that bet."))
 
     def has_balance(self):
         return self.tokens > 0
@@ -52,13 +56,16 @@ class Player(object):
 
 
 class SlotMachine(object):
+
     def __init__(self):
-        self.v = ['SIX!!!', 'LUCKY6', 'CHERRY', '3-BAR!', '2-BAR!', '1-BAR!'] 
+        self.values = ['SIX!!!', 'LUCKY6', 'CHERRY', '3-BAR!', '2-BAR!', '1-BAR!']
         self.multiplier = 1
         self.wager = 0
         self.diagonal_winning_value = 0
         self.horizontal_winning_value = 0
         self.matrix = [[], [], []]
+        self.mix_bar_value = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
+
 
     @staticmethod
     def valid_bet(wager_size):
@@ -78,8 +85,8 @@ class SlotMachine(object):
         return [upper, lower]
 
     def create_matrix_values(self):
-        # creates a matrix with numbers that correspond to each value in the list 'v'.
-        self.matrix = [[],[],[]] #resets matrix values
+        # creates a matrix with numbers that correspond to each value.
+        self.matrix = [[],[],[]]  # resets matrix values
         numbers = [randrange(6) for r in range(3)]
         # Top Row
         for n in numbers:
@@ -91,16 +98,16 @@ class SlotMachine(object):
 
         return self.matrix
 
-    def rep_matrix(self):
+    def represent_matrix(self):
         # Generates a matrix and then converts it to slot values for display
         matrix = self.create_matrix_values()
-        repped = [[self.v[int(matrix[0][i])] for i in range(3)],
-                  [self.v[int(matrix[1][i])] for i in range(3)],
-                  [self.v[int(matrix[2][i])] for i in range(3)]]
-        self.package_matrix(repped)
+        represented_values = [[self.values[int(matrix[0][i])] for i in range(3)],
+                             [self.values[int(matrix[1][i])] for i in range(3)],
+                             [self.values[int(matrix[2][i])] for i in range(3)]]
+        self.package_matrix(represented_values)
 
         # Kept return for testing purposes(?)
-        return matrix, repped
+        return matrix, represented_values
 
     @staticmethod
     def package_matrix(matrix):
@@ -121,35 +128,26 @@ class SlotMachine(object):
 
         first_diagonal = (matrix[0][0], matrix[1][1], matrix[2][2])
         second_diagonal = (matrix[2][0], matrix[1][1], matrix[0][2])
-        mix_bar_values = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
 
         if self.all_same(first_diagonal):
-            self.diagonal_winning_value = self.v[first_diagonal[0]]
+            self.diagonal_winning_value = self.values[first_diagonal[0]]
         elif self.all_same(second_diagonal):
-            self.diagonal_winning_value = self.v[second_diagonal[0]]
-        elif first_diagonal in mix_bar_values or second_diagonal in mix_bar_values:
+            self.diagonal_winning_value = self.values[second_diagonal[0]]
+        elif first_diagonal in self.mix_bar_value or second_diagonal in self.mix_bar_value:
             self.diagonal_winning_value = "MIX BAR"
         else:
             self.diagonal_winning_value = 0
 
-    # May want to rename this function to something that directly relates to the horizontal middle row.
     def horizontal_check(self, matrix):
         # Checks the horizontal row for a match, and returns the values in the row if they do match.
         horizontal = [i for i in matrix[1]]
-        mix_bar_values = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
 
         if self.all_same(horizontal):
-            self.horizontal_winning_value = self.v[horizontal[0]]
-        elif tuple(horizontal) in mix_bar_values:
+            self.horizontal_winning_value = self.values[horizontal[0]]
+        elif tuple(horizontal) in self.mix_bar_value:
             self.horizontal_winning_value = "MIX BAR"
         else:
             self.horizontal_winning_value = 0
-
-    # def multiplier(self):  # redundant function
-    #     if self.horizontal_winning_value:
-    #         self.multiplier = 1
-    #     elif self.diagonal_winning_value:
-    #         self.multiplier = 0.75
 
     def place_bet(self, player):
         # sets self.wager to whatever the person bets
@@ -172,7 +170,6 @@ class SlotMachine(object):
             '3-BAR!': 100, '2-BAR!': 50, '1-BAR!': 20, 'MIX BAR': 3
         }
 
-        # Can you win only horizontal or diagonal and not both?
         if self.horizontal_winning_value:
             payout_value = payouts[self.horizontal_winning_value]
             print("You have won {} tokens!".format(self.wager * payout_value))
