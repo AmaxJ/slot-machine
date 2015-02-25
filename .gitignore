@@ -7,5 +7,6 @@
 .idea/slot-machine.iml
 .idea/vcs.xml
 .idea/workspace.xml
+
 *.pyc
-*.sml
+*.xml
