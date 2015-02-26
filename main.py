@@ -1,4 +1,4 @@
-from slot import SlotMachine, Player
+from slot import SlotMachine, Player, InsufficientFunds
 import graphics
 
 yes = ("yesyeayeyayahyyeahyup")
