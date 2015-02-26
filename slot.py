@@ -19,6 +19,7 @@ class Player(object):
             self.tokens += number_of_tokens
         except TypeError:
             print "Please enter the number of tokens you wish to add."
+        
             
     def bet(self, amount):
         if self.tokens >= amount:
@@ -159,11 +160,10 @@ class SlotMachine(object):
             self.wager = int(raw_input("Tokens: "))
             if self.valid_bet(self.wager):
                 player.bet(self.wager)
-                print("You are betting {} tokens".format(self.wager))
             else:
                 print("That amount is not allowed.")
                 self.place_bet(player)
-        except ValueError, TypeError:
+        except (ValueError, TypeError):
             print("That's not a valid bet!")
             self.place_bet(player)
 
@@ -179,7 +179,7 @@ class SlotMachine(object):
             player.add_tokens(self.wager * payout_value)
         elif self.diagonal_winning_value:
             payout_value = payouts[self.diagonal_winning_value]
-            floor_payout = fl(self.wager * payout_value * 0.75)
+            floor_payout = int(fl(self.wager * payout_value * 0.75))
             print("You have won {} tokens!".format(floor_payout))
             player.add_tokens(floor_payout)
         else:
