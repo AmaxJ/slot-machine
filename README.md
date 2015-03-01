@@ -1,21 +1,20 @@
-# slot-machine
+#Slot-Machine Game
 
-Lucky-6 slot machine game
+This game is based off of the 'Lucky-7' 3-reel slot-machine.
+---
+A winning match can be made horizontally or diagonally. In addition to 3 matching values, any combination of 1-BAR!, 2-BAR! or 3-BAR! values also counts as a winning match.
 
-Begining screen should display:
+#Rules:
+*The player may wager between 1 and 3 tokens per spin.
+*Diagonal matches pay out 25% less than horizontal matches.
 
-Player's balance in tokens,
-prompt for bet size,
-prompt for spin. Then after a spin it should
-display the result and updated player balance.
-When player goes broke prompt for reload.
+#Payouts
+*SIX!!! : 1500x
+*LUCKY6 : 250x
+*CHERRY : 150x
+*3-BAR! : 100x
+*2-BAR! : 50x
+*1-BAR! : 20x
+*Mixed bars : 3x
 
-# RULES:
- -Horizontal matches recieve 1x payout
- 
- -diagonal matches recieve .75x payout
- 
- -max bet of 3 tokens
- 
- -When player runs out of token game prompts player to reload
-##### TREMULE COMMENT TEST ####
+
