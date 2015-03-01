@@ -7,7 +7,6 @@ from graphics import *  # WINNER graphic that will display when player wins
 class InsufficientFunds(Exception):
     pass
 
-
 class Player(object):
     def __init__(self, name):
         self.name = name
@@ -30,36 +29,7 @@ class Player(object):
     def has_balance(self):
         return self.tokens > 0
 
-# Move a formatted version of this info to the readme(?)
-# slot machine will be based on 'lucky-7' 3-reel slot
-# with the values in each reel consisting of:
-# In order of value (and order on the reel?):
-# -So if row 1, column 1 value == SIX!!!, row2, column 1 value ==  LUCKY6
-
-# SIX!!!
-# LUCKY6
-# CHERRY
-# 	3-BAR!
-# 	2-BAR!
-# 	1-BAR!
-
-# probabilities (maybe?) and payout structures for matching rows:
-#
-# SIX!!!= 1500x
-# LUCKY6 = 250x
-# CHERRY = 150x
-# 3-BAR! = 100x
-# 2-BAR! = 50x
-# 1-BAR! = 20x
-# Mixed bars= 3x
-# 2 Bars, and some other value = 2x
-
-# 1x payout for horizontal match
-# .75x payout for diagonal match
-
-
 class SlotMachine(object):
-
     def __init__(self):
         self.values = ['SIX!!!', 'LUCKY6', 'CHERRY', '3-BAR!', '2-BAR!', '1-BAR!']
         self.multiplier = 1
@@ -68,7 +38,6 @@ class SlotMachine(object):
         self.horizontal_winning_value = 0
         self.matrix = [[], [], []]
         self.mix_bar_value = list(set(permutations([3, 3, 3, 4, 4, 4, 5, 5, 5], 3)))
-
 
     @staticmethod
     def valid_bet(wager_size):
@@ -98,7 +67,6 @@ class SlotMachine(object):
             self.matrix[1].append(n)
         # Bottom Row
             self.matrix[2].append(self.reel_values(n)[1])
-
         return self.matrix
 
     def represent_matrix(self):
@@ -108,7 +76,6 @@ class SlotMachine(object):
                              [self.values[int(matrix[1][i])] for i in range(3)],
                              [self.values[int(matrix[2][i])] for i in range(3)]]
         self.package_matrix(represented_values)
-
         # Kept return for testing purposes(?)
         return matrix, represented_values
 
@@ -128,10 +95,8 @@ class SlotMachine(object):
         """Check if there is a match along the diagonals of the matrix and returns the winning value
         eg. SIX!!!, LUCKY6 or just BAR for any combination of 3-BAR, 2-BAR or 1-BAR."""
         # Assign matrix elements to variables to make it easier to view
-
         first_diagonal = (matrix[0][0], matrix[1][1], matrix[2][2])
         second_diagonal = (matrix[2][0], matrix[1][1], matrix[0][2])
-
         if self.all_same(first_diagonal):
             self.diagonal_winning_value = self.values[first_diagonal[0]]
         elif self.all_same(second_diagonal):
@@ -144,7 +109,6 @@ class SlotMachine(object):
     def horizontal_check(self, matrix):
         # Checks the horizontal row for a match, and returns the values in the row if they do match.
         horizontal = [i for i in matrix[1]]
-
         if self.all_same(horizontal):
             self.horizontal_winning_value = self.values[horizontal[0]]
         elif tuple(horizontal) in self.mix_bar_value:
@@ -172,7 +136,7 @@ class SlotMachine(object):
             'SIX!!!': 1500, 'LUCKY6': 250, 'CHERRY': 150,
             '3-BAR!': 100, '2-BAR!': 50, '1-BAR!': 20, 'MIX BAR': 3
         }
-
+        
         if self.horizontal_winning_value:
             payout_value = payouts[self.horizontal_winning_value]
             print("You have won {} tokens!".format(self.wager * payout_value))
